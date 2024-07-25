@@ -1,0 +1,61 @@
+name: Build pikepdf WASM wheel
+
+on:
+  push:
+    branches:
+      - wasm_build
+  pull_request:
+    branches:
+      - wasm_build
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: pikepdf
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.1'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          pip install pyodide-build==0.26.1
+
+      - name: Install and Activate emsdk
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git /opt/emsdk
+          cd /opt/emsdk
+          PYODIDE_EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version)
+          ./emsdk install ${PYODIDE_EMSCRIPTEN_VERSION}
+          ./emsdk activate ${PYODIDE_EMSCRIPTEN_VERSION}
+          source /opt/emsdk/emsdk_env.sh
+
+      - name: Clone and Build qpdf
+        run: |
+          git clone https://github.com/qpdf/qpdf.git /opt/qpdf
+          cd /opt/qpdf
+          embuilder build zlib
+          embuilder build libjpeg
+          emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_IMPLICIT_CRYPTO=0 -DREQUIRE_CRYPTO_NATIVE=1
+          emmake cmake --build build --target libqpdf
+
+      - name: Build pikepdf
+        run: |
+          export QPDF_SOURCE_TREE=/opt/qpdf
+          export QPDF_BUILD_LIBDIR=/opt/qpdf/build/libqpdf
+          cd $GITHUB_WORKSPACE/pikepdf
+          pyodide build
+          ls $GITHUB_WORKSPACE/pikepdf
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pikepdf-wasm-wheel
+          path: dist/*.whl
