@@ -47,7 +47,9 @@ jobs:
           emcmake cmake -S . -B build \
            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
            -DUSE_IMPLICIT_CRYPTO=0 \
-           -DREQUIRE_CRYPTO_NATIVE=1
+           -DREQUIRE_CRYPTO_NATIVE=1 \
+           -DCMAKE_C_FLAGS="-fexceptions" \
+           -DCMAKE_CXX_FLAGS="-fexceptions"
           emmake cmake --build build --target libqpdf
 
       - name: Build pikepdf
@@ -55,6 +57,9 @@ jobs:
           source /opt/emsdk/emsdk_env.sh
           export QPDF_SOURCE_TREE=/opt/qpdf
           export QPDF_BUILD_LIBDIR=/opt/qpdf/build/libqpdf
+          export CFLAGS="-fexceptions"
+          export CXXFLAGS="-fexceptions"
+          export LDFLAGS="-fexceptions"
           cd $GITHUB_WORKSPACE/pikepdf
           pyodide build
 
