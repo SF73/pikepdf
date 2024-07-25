@@ -41,6 +41,7 @@ jobs:
         run: |
           git clone https://github.com/qpdf/qpdf.git /opt/qpdf
           cd /opt/qpdf
+          source /opt/emsdk/emsdk_env.sh
           embuilder build zlib
           embuilder build libjpeg
           emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_IMPLICIT_CRYPTO=0 -DREQUIRE_CRYPTO_NATIVE=1
@@ -48,6 +49,7 @@ jobs:
 
       - name: Build pikepdf
         run: |
+          source /opt/emsdk/emsdk_env.sh
           export QPDF_SOURCE_TREE=/opt/qpdf
           export QPDF_BUILD_LIBDIR=/opt/qpdf/build/libqpdf
           cd $GITHUB_WORKSPACE/pikepdf
