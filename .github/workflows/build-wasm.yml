@@ -44,7 +44,10 @@ jobs:
           source /opt/emsdk/emsdk_env.sh
           embuilder build zlib
           embuilder build libjpeg
-          emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_IMPLICIT_CRYPTO=0 -DREQUIRE_CRYPTO_NATIVE=1
+          emcmake cmake -S . -B build \
+           -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+           -DUSE_IMPLICIT_CRYPTO=0 \
+           -DREQUIRE_CRYPTO_NATIVE=1
           emmake cmake --build build --target libqpdf
 
       - name: Build pikepdf
@@ -54,10 +57,9 @@ jobs:
           export QPDF_BUILD_LIBDIR=/opt/qpdf/build/libqpdf
           cd $GITHUB_WORKSPACE/pikepdf
           pyodide build
-          ls $GITHUB_WORKSPACE/pikepdf
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pikepdf-wasm-wheel
-          path: dist/*.whl
+          path: pikepdf/dist/*.whl

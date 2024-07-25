@@ -4,8 +4,13 @@
 name: Build and upload to PyPI
 
 on:
-  push: {}
-  pull_request: {}
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 # For musllinux support, see note in pyproject.toml
 
