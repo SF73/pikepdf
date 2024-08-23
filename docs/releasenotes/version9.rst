@@ -1,3 +1,30 @@
+v9.2.0
+======
+
+- Updated C++/Python exception translation to new pybind11 2.12.0+ protocol,
+  fixing possible undefined behavior in multithreaded applications.
+- pybind11 2.12.0 is now required.
+- qpdf 11.9.1 is now used to build wheels.
+- Modernized copyright information to REUSE.toml specification.
+- Added a new test file for a rare case, CCITT with EndOfLine=True. Thanks
+  @ekordas. :issue:`602,601`
+
+v9.1.2
+======
+
+- Fixed handling of CalRGB and CalGray images with palettes.
+- Fixed a test suite failure when numpy 2.1 is installed. :issue:`603`
+- Prevented use of setuptools 72+ since it seems to introduce build errors.
+- Added a missing #include header. :issue:`600`
+
+v9.1.1
+======
+
+- Fixed an issue where small floating point values would be recorded in
+  scientific notation, contrary to the PDF specification. :issue:`598`
+- Fixed some false positive warnings on Windows C++ compilers.
+- Improved support for Python 3.13 pre-release.
+
 v9.1.0
 ======
 
